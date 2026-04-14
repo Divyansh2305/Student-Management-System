@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditStudent() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const departmentSpecs = {
+  const departmentSpecs = React.useMemo(() => ({
     BCA: ["General", "Data Science", "AI", "Cyber Security"],
     MCA: ["Software Dev", "AI", "Cloud Computing"],
     "B.Tech": ["CSE", "Mechanical", "Civil", "Electrical"],
@@ -22,7 +22,7 @@ export default function EditStudent() {
     "LLM": ["International Law"],
     "Diploma": ["Engineering", "Management"],
     "PhD": ["Research"],
-  };
+  }), []);
 
   const [student, setStudent] = useState({});
   const [photo, setPhoto] = useState("");
@@ -31,16 +31,16 @@ export default function EditStudent() {
 
   // 🔥 LOAD DATA
   useEffect(() => {
-    const students = JSON.parse(localStorage.getItem("students")) || [];
-    const found = students.find((s) => String(s.id) === String(id));
+  const students = JSON.parse(localStorage.getItem("students")) || [];
+  const found = students.find((s) => String(s.id) === String(id));
 
-    if (found) {
-      setStudent(found);
-      setPhoto(found.photo || "");
-      setSpecs(departmentSpecs[found.department] || []);
-      setEducation(found.education || []);
-    }
-  }, [id]);
+  if (found) {
+    setStudent(found);
+    setPhoto(found.photo || "");
+    setSpecs(departmentSpecs[found.department] || []);
+    setEducation(found.education || []);
+  }
+}, [id, departmentSpecs]);
 
   // 🔄 INPUT HANDLE
   const handleChange = (e) => {

@@ -6,6 +6,9 @@ export default function StudentView() {
   const { id } = useParams();
   const [student, setStudent] = useState(null);
 
+  const collegeWebsite = "www.abccollege.com";
+  const collegeAddress = "ABC College, Indore, Madhya Pradesh, India";
+
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("students")) || [];
     setStudent(data.find((s) => s.id === id));
@@ -14,25 +17,7 @@ export default function StudentView() {
   if (!student) return <p className="p-6">Loading...</p>;
 
   const logo = "/logo.png";
-  const getBase64 = (url) =>
-    new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = url;
 
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-
-        resolve(canvas.toDataURL("image/png"));
-      };
-
-      img.onerror = reject;
-    });
   // generateIDCard
   const generateIDCard = (s) => {
     const cardW = 85.6;
@@ -53,11 +38,9 @@ export default function StudentView() {
     const yBack = yStart + cardH + gap;
 
     // ✅ LOGO PATH
-    const logo = "/logo.png";
+    // const logo = "/logo.png";
 
-    // ✅ COLLEGE INFO
-    const collegeWebsite = "www.abccollege.com";
-    const collegeAddress = "ABC College, Indore, Madhya Pradesh, India";
+
 
     // ✅ CUT MARKS
     const cut = (x, y) => {
@@ -202,7 +185,8 @@ export default function StudentView() {
 
       doc.setFont(undefined, "normal");
       doc.setTextColor(0, 0, 200);
-      doc.text("www.abccollege.com", x + 25, yy);
+      // doc.text("www.abccollege.com", x + 25, yy);
+      doc.text(collegeWebsite || "www.abccollege.com", x + 25, yy);
 
       yy += 4;
 
@@ -212,10 +196,7 @@ export default function StudentView() {
       doc.text("College:", x + 4, yy);
 
       doc.setFont(undefined, "normal");
-      const clgAddr = doc.splitTextToSize(
-        "ABC College, Indore, MP, India",
-        45
-      );
+      const clgAddr = doc.splitTextToSize(collegeAddress || "ABC College, Indore, MP, India", 45);
       doc.text(clgAddr, x + 25, yy);
 
       yy += clgAddr.length * 3 + 3;
@@ -433,7 +414,14 @@ export default function StudentView() {
         {student.photo && (
           <img
             src={student.photo}
-            className="w-20 h-20 rounded-full border object-cover"
+            alt="student"
+            style={{
+              width: "100px",
+              height: "120px",
+              objectFit: "cover",
+              border: "1px solid #000",
+              padding: "3px"
+            }}
           />
         )}
 

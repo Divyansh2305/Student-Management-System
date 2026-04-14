@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { courseData as defaultCourseData } from "./courseData";
 
 export default function AddStudent() {
   const navigate = useNavigate();
 
-  const departmentSpecs = {
-    BCA: ["General", "Data Science", "AI", "Cyber Security"],
-    MCA: ["Software Dev", "AI", "Cloud Computing"],
-    "B.Tech": ["CSE", "Mechanical", "Civil", "Electrical"],
-    "M.Tech": ["CSE", "VLSI", "Thermal"],
-    "B.Sc": ["Physics", "Chemistry", "Mathematics", "Biology"],
-    "M.Sc": ["Physics", "Chemistry", "Maths"],
-    BBA: ["Marketing", "Finance", "HR"],
-    MBA: ["Marketing", "Finance", "HR", "Operations"],
-    BA: ["History", "Political Science", "English"],
-    MA: ["History", "English"],
-    "B.Com": ["General", "Computer Applications"],
-    "M.Com": ["Accounting", "Finance"],
-    LLB: ["Corporate Law", "Criminal Law"],
-    LLM: ["International Law"],
-    Diploma: ["Engineering", "Management"],
-    PhD: ["Research"]
-  };
+  const departmentSpecs = useMemo(() => ({
+  BCA: ["General", "Data Science", "AI", "Cyber Security"],
+  MCA: ["Software Dev", "AI", "Cloud Computing"],
+  "B.Tech": ["CSE", "Mechanical", "Civil", "Electrical"],
+  "M.Tech": ["CSE", "VLSI", "Thermal"],
+  "B.Sc": ["Physics", "Chemistry", "Mathematics", "Biology"],
+  "M.Sc": ["Physics", "Chemistry", "Maths"],
+  BBA: ["Marketing", "Finance", "HR"],
+  MBA: ["Marketing", "Finance", "HR", "Operations"],
+  BA: ["History", "Political Science", "English"],
+  MA: ["History", "English"],
+  "B.Com": ["General", "Computer Applications"],
+  "M.Com": ["Accounting", "Finance"],
+  LLB: ["Corporate Law", "Criminal Law"],
+  LLM: ["International Law"],
+  Diploma: ["Engineering", "Management"],
+  PhD: ["Research"]
+}), []);
 
   const [student, setStudent] = useState({
     name: "", dob: "", gender: "Male",
@@ -52,10 +52,15 @@ export default function AddStudent() {
   const [courseData, setCourseData] = useState({});
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("courseData")) || defaultCourseData;
-    setCourseData(saved);
+  const saved =
+    JSON.parse(localStorage.getItem("courseData")) || defaultCourseData;
+
+  setCourseData(saved);
+
+  if (departmentSpecs[student.department]) {
     setSpecs(departmentSpecs[student.department]);
-  }, []);
+  }
+}, [student.department, departmentSpecs]);
 
   // INPUT
   const handleChange = (e) => {
